@@ -1,0 +1,103 @@
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=44669 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+=============== LodeTool bench ===============
+world: /tmp/claude-0/w/worldS  (36 regions)
+
+chunks encoded + verified : 22,801
+  round-trip, light kept   : 22,801 / 22,801 byte-exact
+  round-trip, light dropped: 22,801 / 22,801 byte-exact (vs source minus light+heightmaps)
+  source NBT == lib reserialize: 22,801 / 22,801
+failures: 0
+block states in table: 1,144   biomes: 33
+block entities: 14,904 (0.7/chunk), 7,077,126 B uncompressed NBT (0.8% of chunk NBT)
+state table (zstd19): 15,017 B - charged to every Lode row
+dictionary: 114,688 B, trained on a DIFFERENT world (world2)
+
+--- SIZE (vanilla bytes counted only for chunks that verified) ---
+  vanilla .mca (allocated sectors + headers)               177,209,344   1.00x
+    cf. vanilla .mca file lengths                          183,074,816  (file lengths, incl. free sectors)
+    cf. uncompressed chunk NBT                             842,509,034
+    cf. uncompressed light+heightmap NBT                   263,439,774
+  vanilla NBT, deflate6 per chunk, no padding              119,738,120   1.48x
+  Linear-style: vanilla NBT, zstd1 per region              120,571,896   1.47x
+  Linear-style: vanilla NBT, zstd19 per region              80,041,842   2.21x
+  -- Lode, light kept --
+  (NBT id-form, not columnar) deflate6, per chunk          111,110,482   1.59x
+  (NBT id-form, not columnar) zstd6 + dict, per chunk       99,703,416   1.78x
+  deflate6, per chunk                                      108,024,259   1.64x
+  zstd1, per chunk                                         118,431,024   1.50x
+  zstd3, per chunk                                         114,673,023   1.55x
+  zstd6, per chunk                                         106,256,354   1.67x
+  zstd9, per chunk                                         105,509,864   1.68x
+  zstd12, per chunk                                        105,137,035   1.69x
+  zstd19, per chunk                                         95,700,774   1.85x
+  zstd1 + dict, per chunk                                  110,652,753   1.60x
+  zstd3 + dict, per chunk                                  107,532,785   1.65x
+  zstd6 + dict, per chunk                                   96,971,701   1.83x
+  zstd9 + dict, per chunk                                   95,609,718   1.85x
+  zstd12 + dict, per chunk                                  94,826,387   1.87x
+  zstd19 + dict, per chunk                                  85,853,624   2.06x
+  zstd3, per 2x2 group                                     107,376,457   1.65x
+  zstd9, per 2x2 group                                      96,536,821   1.84x
+  zstd19, per 2x2 group                                     85,744,258   2.07x
+  zstd3, per 4x4 group                                     106,673,596   1.66x
+  zstd9, per 4x4 group                                      95,210,909   1.86x
+  zstd19, per 4x4 group                                     82,211,681   2.16x
+  zstd3 + dict, per 2x2 group                              106,817,262   1.66x
+  zstd9 + dict, per 2x2 group                               93,462,358   1.90x
+  zstd19 + dict, per 2x2 group                              83,128,009   2.13x
+  zstd19, per region (not live: read = whole region)        77,752,340   2.28x
+  -- Lode, light dropped --
+  (NBT id-form, not columnar) deflate6, per chunk           90,452,887   1.96x
+  (NBT id-form, not columnar) zstd6 + dict, per chunk       82,837,496   2.14x
+  deflate6, per chunk                                       87,752,796   2.02x
+  zstd1, per chunk                                          95,795,335   1.85x
+  zstd3, per chunk                                          93,200,552   1.90x
+  zstd6, per chunk                                          86,813,944   2.04x
+  zstd9, per chunk                                          86,213,337   2.06x
+  zstd12, per chunk                                         86,009,053   2.06x
+  zstd19, per chunk                                         78,372,248   2.26x
+  zstd1 + dict, per chunk                                   90,056,190   1.97x
+  zstd3 + dict, per chunk                                   88,513,773   2.00x
+  zstd6 + dict, per chunk                                   80,300,890   2.21x
+  zstd9 + dict, per chunk                                   78,989,123   2.24x
+  zstd12 + dict, per chunk                                  78,449,077   2.26x
+  zstd19 + dict, per chunk                                  71,486,171   2.48x
+  zstd3, per 2x2 group                                      89,326,544   1.98x
+  zstd9, per 2x2 group                                      80,004,920   2.21x
+  zstd19, per 2x2 group                                     71,410,215   2.48x
+  zstd3, per 4x4 group                                      88,863,915   1.99x
+  zstd9, per 4x4 group                                      79,591,750   2.23x
+  zstd19, per 4x4 group                                     69,007,319   2.57x
+  zstd3 + dict, per 2x2 group                               88,652,361   2.00x
+  zstd9 + dict, per 2x2 group                               77,703,141   2.28x
+  zstd19 + dict, per 2x2 group                              69,572,795   2.55x
+  zstd19, per region (not live: read = whole region)        65,324,259   2.71x
+
+--- TIME per chunk, single thread (mean over 2000 chunks, after warm-up) ---
+  vanilla codec (zlib default)             write    887.7 us   read    284.0 us
+  Lode codec zstd1, light                  write    243.8 us   read    146.3 us
+  Lode codec zstd1+dict, light             write    243.6 us   read    167.5 us
+  Lode codec zstd3, light                  write    240.4 us   read    137.9 us
+  Lode codec zstd3+dict, light             write    295.7 us   read    158.3 us
+  Lode codec zstd6, light                  write    418.7 us   read    138.1 us
+  Lode codec zstd6+dict, light             write    556.0 us   read    146.3 us
+  Lode codec zstd9, light                  write    626.3 us   read    167.1 us
+  Lode codec zstd9+dict, light             write    739.0 us   read    167.8 us
+  Lode codec zstd12, light                 write   1162.6 us   read    124.0 us
+  Lode codec zstd12+dict, light            write   2080.4 us   read    142.6 us
+  Lode codec zstd19, light                 write   9474.1 us   read    139.6 us
+  Lode codec zstd19+dict, light            write   5792.8 us   read    164.4 us
+  Lode codec zstd1, no light               write    195.7 us   read    111.6 us
+  Lode codec zstd1+dict, no light          write    196.8 us   read    139.7 us
+  Lode codec zstd3, no light               write    238.9 us   read    126.1 us
+  Lode codec zstd3+dict, no light          write    255.5 us   read    134.7 us
+  Lode codec zstd6, no light               write    373.4 us   read    126.5 us
+  Lode codec zstd6+dict, no light          write    411.7 us   read    137.8 us
+  Lode codec zstd9, no light               write    482.9 us   read    125.1 us
+  Lode codec zstd9+dict, no light          write    627.9 us   read    105.1 us
+  Lode codec zstd12, no light              write   1101.2 us   read    119.7 us
+  Lode codec zstd12+dict, no light         write   1481.3 us   read    126.6 us
+  Lode codec zstd19, no light              write   7186.0 us   read    139.1 us
+  Lode codec zstd19+dict, no light         write   4706.1 us   read    134.4 us
+  transform palette<->ids (in place)       write     31.3 us   read     21.8 us
+  (no light: add the game's relight cost on first load - measured separately)

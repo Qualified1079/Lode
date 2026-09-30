@@ -1,0 +1,41 @@
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=46483 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+=============== LodeTool bench ===============
+world: /tmp/claude-0/world-A-pristine  (36 regions)
+
+chunks encoded + verified : 22,801
+  round-trip, light kept   : 22,801 / 22,801 byte-exact
+  round-trip, light dropped: 22,801 / 22,801 byte-exact (vs source minus light+heightmaps)
+  source NBT == lib reserialize: 22,801 / 22,801
+failures: 0
+block states in table: 1,117   biomes: 33
+state table (zstd19): 6,920 B ? charged to every Lode row
+dictionary: 114,688 B, trained on a DIFFERENT world (world2)
+
+--- TIME per chunk, single thread (mean over 2000 chunks, after warm-up) ---
+  vanilla codec (zlib default)             write    928.8 us   read    265.0 us
+  Lode codec zstd1, light                  write    254.7 us   read    156.1 us
+  Lode codec zstd1+dict, light             write    211.8 us   read    154.9 us
+  Lode codec zstd3, light                  write    272.5 us   read    132.5 us
+  Lode codec zstd3+dict, light             write    279.6 us   read    174.2 us
+  Lode codec zstd6, light                  write    443.5 us   read    145.1 us
+  Lode codec zstd6+dict, light             write    536.4 us   read    150.4 us
+  Lode codec zstd9, light                  write    607.4 us   read    152.9 us
+  Lode codec zstd9+dict, light             write    847.4 us   read    146.0 us
+  Lode codec zstd12, light                 write   1505.4 us   read    134.6 us
+  Lode codec zstd12+dict, light            write   1988.2 us   read    161.6 us
+  Lode codec zstd19, light                 write   9977.3 us   read    147.5 us
+  Lode codec zstd19+dict, light            write   5611.2 us   read    127.5 us
+  Lode codec zstd1, no light               write    184.2 us   read    114.7 us
+  Lode codec zstd1+dict, no light          write    206.3 us   read    132.3 us
+  Lode codec zstd3, no light               write    226.2 us   read    120.1 us
+  Lode codec zstd3+dict, no light          write    244.0 us   read    134.0 us
+  Lode codec zstd6, no light               write    379.7 us   read    127.3 us
+  Lode codec zstd6+dict, no light          write    459.6 us   read    129.1 us
+  Lode codec zstd9, no light               write    469.2 us   read    115.6 us
+  Lode codec zstd9+dict, no light          write    669.4 us   read    128.2 us
+  Lode codec zstd12, no light              write   1117.8 us   read    121.9 us
+  Lode codec zstd12+dict, no light         write   1599.1 us   read    136.2 us
+  Lode codec zstd19, no light              write   7247.8 us   read    120.6 us
+  Lode codec zstd19+dict, no light         write   4615.4 us   read    139.8 us
+  transform palette<->ids (in place)       write     42.8 us   read     26.3 us
+  (no light: add the game's relight cost on first load ? measured separately)

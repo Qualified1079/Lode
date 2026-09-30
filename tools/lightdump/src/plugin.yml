@@ -1,0 +1,6 @@
+name: LightDump
+version: 1
+main: lightdump.LightDump
+api-version: "1.21"
+commands:
+  lightdump: {}

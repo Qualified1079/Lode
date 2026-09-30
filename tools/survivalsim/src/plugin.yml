@@ -1,0 +1,6 @@
+name: SurvivalSim
+version: 1
+main: survivalsim.SurvivalSim
+api-version: "1.21"
+commands:
+  survivalsim: {}

@@ -1,0 +1,63 @@
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=46483 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+=============== MCBench ===============
+world   : /tmp/claude-0/world-A-pristine
+regions : 36 present, analysing the 36 LARGEST
+  ... 5/36 regions, 5,120 chunks, 266s
+  ... 10/36 regions, 10,240 chunks, 508s
+  ... 15/36 regions, 15,360 chunks, 729s
+  ... 20/36 regions, 17,920 chunks, 795s
+  ... 25/36 regions, 19,808 chunks, 822s
+  ... 30/36 regions, 21,568 chunks, 843s
+  ... 35/36 regions, 22,680 chunks, 853s
+  ... 36/36 regions, 22,801 chunks, 854s
+
+--- VANILLA ---
+  DataVersion      : 4440
+  chunks           : 22,801   sections 547,224   (24.0 sec/chunk)
+  file bytes       :     181,174,272   (7,945 B/chunk)
+  real payload     :     118,161,422   (5,182 B/chunk)
+  sector padding   :      57,376,754   (32.7%)
+
+--- TERRAIN COMPLEXITY ---
+  distinct block states : 1,117
+  distinct biomes (enc) : 33
+  distinct biomes       : 33
+  palette/section       : avg 3.9, max 61
+
+--- BLOCK ENTITIES (the NBT floor) ---
+  count            : 4,408   (0.19 per chunk)
+  NBT deflated     :         319,247   (14 B/chunk)
+     minecraft:chest                               801
+     minecraft:brushable_block                     704
+     minecraft:decorated_pot                       659
+     minecraft:mob_spawner                         547
+     minecraft:dispenser                           432
+     minecraft:vault                               415
+     minecraft:barrel                              277
+     minecraft:trial_spawner                       249
+
+--- OUR RE-ENCODE ---
+  blocks + biomes        :      66,348,184   (2,909 B/chunk)
+  + block entities       :      66,667,431   (2,923 B/chunk)
+  + residual chunk NBT   :      84,689,672   (3,714 B/chunk)
+      (block_ticks, fluid_ticks, structures, Status, positions, ...)
+
+  ratio, blocks+BE only (NOT a viable format) : 2.72x
+  *** RATIO, LIVE-SAFE (light+heightmaps derived) : 2.14x ***
+
+  --- same live-safe payload, other codec / granularity ---
+  deflate6, per chunk   :      84,689,672   2.14x
+  zstd19,   per chunk   :      76,357,224   2.37x
+  zstd19,   per region  :      64,465,884   2.81x   (comparable to Linear lvl19)
+  zstd19, per region, LIGHT KEPT (no relight needed) : 73,677,849   2.46x
+
+  Light and heightmaps are the only fields treated as derivable.
+  Regenerating light costs ~1.6 ms/chunk; keeping it instead would add ~900 B/chunk.
+
+--- WHOLE-FOLDER (entities/ and poi/ carried verbatim) ---
+  entities/  file    2,867,200   payload      455,592   (84% padding)
+  poi/       file    1,060,864   payload       31,194   (97% padding)
+
+  *** WHOLE-FOLDER RATIO : 2.17x ***
+
+elapsed 854s
